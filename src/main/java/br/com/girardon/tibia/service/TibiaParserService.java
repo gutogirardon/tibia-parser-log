@@ -20,6 +20,8 @@ public class TibiaParserService {
     @Autowired
     private ExperienceService experienceGainService;
     @Autowired
+    private DamageCausedService damageCausedService;
+    @Autowired
     private DropService dropService;
 
     public TibiaParserService parseLogFile() {
@@ -30,8 +32,9 @@ public class TibiaParserService {
 //        Map<String, Integer> damageTakenByMonster = damageTakenService.findDamageTakenByMonster(logContent);
 
         //List<String> creatureDrops = dropService.parseLootItems(logContent);
-        Map<String, Integer> creatureDrops = dropService.parseLootItems(logContent);
+        //Map<String, Integer> creatureDrops = dropService.parseLootItems(logContent);
         //int creatureDrops = dropService.calculateGoldCoins(logContent);
+        damageCausedService.calculateTotalDamage(logContent);
 
         return null;
     }
