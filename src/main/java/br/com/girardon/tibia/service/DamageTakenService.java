@@ -44,9 +44,20 @@ public class DamageTakenService {
         return damageTakenByMonster;
     }
 
+    public int calculateDamageDifference(String logContent) {
+        List<Integer> damageTakenValues = findDamageTakenValues(logContent);
+        Map<String, Integer> damageTakenByMonster = findDamageTakenByMonster(logContent);
+        int totalDamageTaken = calculateTotal(damageTakenValues);
+        int totalDamageTakenByMonsters = calculateTotal(new ArrayList<>(damageTakenByMonster.values()));
+
+        int damageDifference = totalDamageTaken - totalDamageTakenByMonsters;
+        logger.info("Total damage taken by unknown origins: {} hitpoints.", damageDifference);
+        return damageDifference;
+    }
+
     private List<Integer> findValues(String logContent) {
         List<Integer> values = new ArrayList<>();
-        Pattern pattern = Pattern.compile(DamageTakenService.DAMAGE_TAKEN_LOG_PATTERN);
+        Pattern pattern = Pattern.compile(DAMAGE_TAKEN_LOG_PATTERN);
         Matcher matcher = pattern.matcher(logContent);
 
         while (matcher.find()) {

@@ -27,14 +27,15 @@ public class TibiaParserService {
     public TibiaParserService parseLogFile() {
         String logContent = ReadLogFileUtils.readLogFile();
 //        List<Integer> healingValues = healingService.findHealingValues(logContent);
-//        List<Integer> damageValues = damageTakenService.findDamageTakenValues(logContent);
 //        List<Integer> experienceGainValues = experienceGainService.findExperienceGainValues(logContent);
-//        Map<String, Integer> damageTakenByMonster = damageTakenService.findDamageTakenByMonster(logContent);
+        //List<Integer> damageValues = damageTakenService.findDamageTakenValues(logContent);
+        //Map<String, Integer> damageTakenByMonster = damageTakenService.findDamageTakenByMonster(logContent);
+        damageTakenService.calculateDamageDifference(logContent);
 
         //List<String> creatureDrops = dropService.parseLootItems(logContent);
         //Map<String, Integer> creatureDrops = dropService.parseLootItems(logContent);
         //int creatureDrops = dropService.calculateGoldCoins(logContent);
-        damageCausedService.calculateTotalDamage(logContent);
+        //damageCausedService.calculateTotalDamage(logContent);
 
         return null;
     }
