@@ -19,13 +19,15 @@ public class TibiaParserService {
     private static final String DAMAGE_HEALED_LOG_PATTERN = "\\d{2}:\\d{2} You healed yourself for (\\d+) hitpoints\\.";
     private static final String DAMAGE_TAKEN_LOG_PATTERN = "\\d{2}:\\d{2} You lose (\\d+) hitpoint*";
     private static final String DAMAGE_TAKEN_BY_MONSTER_LOG_PATTERN = "\\d{2}:\\d{2} You lose (\\d+) hitpoints due to an attack by a ([\\w\\s]+)\\.";
-
+    private static final String EXPERIENCE_GAIN_LOG_PATTERN = "\\d{2}:\\d{2} You gained (\\d+) experience points\\.";
 
     public TibiaParserService parseLogFile() {
         String logContent = ReadLogFileUtils.readLogFile();
         List<Integer> healingValues = findHealingValues(logContent);
         List<Integer> damageValues = findDamageTakenValues(logContent);
         Map<String, Integer> damageTakenByMonster = findDamageTakenByMonster(logContent);
+        List<Integer> experienceGainValues = findExperienceGainValues(logContent);
+
         return null;
     }
 
@@ -54,6 +56,14 @@ public class TibiaParserService {
 
         logger.info("{} damage actions were found. Total damage taken: {} hitpoints.", damageValues.size(), calculateTotal(damageValues));
         return damageValues;
+    }
+
+    private List<Integer> findExperienceGainValues(String logContent) {
+        String logPattern = EXPERIENCE_GAIN_LOG_PATTERN;
+        List<Integer> experienceGainValues = findValues(logContent, logPattern);
+
+        logger.info("{} experience gain actions were found. Total experience gained: {} points.", experienceGainValues.size(), calculateTotal(experienceGainValues));
+        return experienceGainValues;
     }
 
     private Map<String, Integer> findDamageTakenByMonster(String logContent) {
