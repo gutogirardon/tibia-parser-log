@@ -1,0 +1,56 @@
+// 20230525145819
+// http://localhost:8080/tibia/logs
+
+{
+  "hitpointsHealed": 8048,
+  "experienceGained": 28462,
+  "damage": {
+    "damageTakenTotalValue": 7683,
+    "damageTakenByMonster": {
+      "bonelord": 234,
+      "cyclops smith": 29,
+      "ghoul": 2,
+      "cyclops": 101,
+      "dwarf soldier": 17,
+      "dragon": 2427,
+      "Black Knight": 449,
+      "wyvern": 47,
+      "dragon lord": 1770,
+      "scorpion": 469
+    },
+    "damageTakenByUnknownSource": 2138,
+    "damageCausedToBlackKnight": 1800
+  },
+  "loot": {
+    "burst arrows": 2,
+    "small diamonds": 2,
+    "steel helmets": 2,
+    "spellbooks": 1,
+    "two handed swords": 1,
+    "white mushrooms": 2,
+    "cyclops toes": 1,
+    "scorpion tails": 3,
+    "plate legs": 3,
+    "soldier helmets": 2,
+    "longswords": 2,
+    "letters": 1,
+    "dragon ham": 26,
+    "meats": 3,
+    "bolts": 7,
+    "hatchets": 2,
+    "picks": 1,
+    "gold coins": 1177,
+    "strong health potions": 1,
+    "copper shields": 1,
+    "leather legs": 1,
+    "hams": 1,
+    "cyclops trophys": 1,
+    "royal spears": 1,
+    "dragon's tails": 3,
+    "bones": 1,
+    "meat": 3,
+    "crossbows": 2,
+    "steel shields": 4,
+    "green dragon leather": 1
+  }
+}
