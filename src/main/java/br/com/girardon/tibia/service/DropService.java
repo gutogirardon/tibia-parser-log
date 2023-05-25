@@ -4,7 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,62 +13,88 @@ import java.util.regex.Pattern;
 public class DropService {
 
     private static final Logger logger = LoggerFactory.getLogger(DropService.class);
-    private static final String CREATURE_DROP_LOG_PATTERN = "\\d{2}:\\d{2} Loot of a ([\\w\\s]+): (.*)\\.";
-    private static final String GOLD_COINS_PATTERN = "(\\d+) gold coin(s)?|a gold coin";
+    private static final String LOOT_LOG_PATTERN = "\\d{2}:\\d{2} Loot of [^:]+: ([^\\.]+)\\.";
 
-    public Map<String, Integer> findCreatureDropValues(String logContent) {
-        Map<String, Integer> creatureDrops = new HashMap<>();
-        Pattern pattern = Pattern.compile(CREATURE_DROP_LOG_PATTERN);
+    public Map<String, Integer> parseLootItems(String logContent) {
+        Map<String, Integer> lootItems = findLootItems(logContent);
+
+        logger.info("{} unique loot items were found: {}", lootItems.size(), lootItems);
+        return lootItems;
+    }
+
+    private Map<String, Integer> findLootItems(String logContent) {
+        Map<String, Integer> lootItems = new HashMap<>();
+        Pattern pattern = Pattern.compile(LOOT_LOG_PATTERN);
         Matcher matcher = pattern.matcher(logContent);
 
         while (matcher.find()) {
-            String creature = matcher.group(1);
-            String drop = matcher.group(2);
-            int goldCoins = calculateGoldCoins(drop);
+            String loot = matcher.group(1);
+            if (!loot.equals("nothing")) {
+                String[] items = loot.split(", ");
+                for (String item : items) {
+                    int itemValue = getItemValue(item);
+                    if (itemValue > 0) {
+                        String itemName = getItemName(item);
+                        lootItems.put(itemName, lootItems.getOrDefault(itemName, 0) + itemValue);
+                    }
+                }
+            }
+        }
 
-            // Verifica se o monstro já existe no mapa
-            if (creatureDrops.containsKey(creature)) {
-                int currentGoldCoins = creatureDrops.get(creature);
-                creatureDrops.put(creature, currentGoldCoins + goldCoins);
+        return lootItems;
+    }
+
+    private int getItemValue(String item) {
+        String[] parts = item.split(" ", 2);
+
+        if (parts.length == 1) {
+            String valueStr = parts[0];
+            if (startsWithAlphabeticCharacter(valueStr)) {
+                return 1;
+            }
+        }
+
+        if (parts.length == 2) {
+            String valueStr = parts[0];
+            if (startsWithAlphabeticCharacter(valueStr)) {
+                return 1;
             } else {
-                creatureDrops.put(creature, goldCoins);
+                try {
+                    return Integer.parseInt(parts[0]);
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
             }
         }
 
-        logger.info("Creature drops:");
-        for (Map.Entry<String, Integer> entry : creatureDrops.entrySet()) {
-            String creature = entry.getKey();
-            int goldCoins = entry.getValue();
-            logger.info("- Loot of {}: {} gold coins", creature, goldCoins);
-        }
-
-        return creatureDrops;
+        return 0;
     }
 
-    private int calculateGoldCoins(String drop) {
-        int goldCoins = 0;
-        Pattern pattern = Pattern.compile(GOLD_COINS_PATTERN);
-        Matcher matcher = pattern.matcher(drop);
+    private String getItemName(String item) {
+        String[] parts = item.split(" ", 2);
 
-        while (matcher.find()) {
-            String coinsString = matcher.group();
-            int coins = extractGoldCoins(coinsString);
-            goldCoins += coins;
+        if (parts.length == 1) {
+            return parts[0] + "s";
         }
 
-        return goldCoins;
-    }
-
-    private int extractGoldCoins(String coinsString) {
-        if (coinsString.equals("a gold coin")) {
-            return 1;
-        } else {
-            try {
-                String coinsValue = coinsString.split(" ")[0];
-                return Integer.parseInt(coinsValue);
-            } catch (NumberFormatException e) {
-                return 0;
+        if (parts.length == 2) {
+            if (parts[0].equals("a")) {
+                return parts[1] + "s";
+            } else if (startsWithNumericCharacter(parts[0])) {
+                return parts[1];
+            } else {
+                return item;
             }
         }
+
+        return item;
+    }
+
+    private boolean startsWithAlphabeticCharacter(String str) {
+        return str.matches("^[a-zA-Z].*");
+    }
+
+    private boolean startsWithNumericCharacter(String str) {
+        return str.matches("^[0-9].*");
     }
 }

@@ -28,7 +28,10 @@ public class TibiaParserService {
 //        List<Integer> damageValues = damageTakenService.findDamageTakenValues(logContent);
 //        List<Integer> experienceGainValues = experienceGainService.findExperienceGainValues(logContent);
 //        Map<String, Integer> damageTakenByMonster = damageTakenService.findDamageTakenByMonster(logContent);
-        Map<String, Integer> creatureDrops = dropService.findCreatureDropValues(logContent);
+
+        //List<String> creatureDrops = dropService.parseLootItems(logContent);
+        Map<String, Integer> creatureDrops = dropService.parseLootItems(logContent);
+        //int creatureDrops = dropService.calculateGoldCoins(logContent);
 
         return null;
     }
