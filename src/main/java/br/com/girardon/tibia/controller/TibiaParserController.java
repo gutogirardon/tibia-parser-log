@@ -1,5 +1,6 @@
 package br.com.girardon.tibia.controller;
 
+import br.com.girardon.tibia.dto.TibiaLogDTO;
 import br.com.girardon.tibia.service.TibiaParserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +18,9 @@ public class TibiaParserController {
     }
 
     @GetMapping("/logs")
-    public ResponseEntity<TibiaParserService> parseLog() {
-        TibiaParserService result = tibiaParserService.parseLogFile();
+    public ResponseEntity<TibiaLogDTO> parseLog() {
+        TibiaLogDTO result = tibiaParserService.parseLogFile();
         return ResponseEntity.ok(result);
     }
+
 }

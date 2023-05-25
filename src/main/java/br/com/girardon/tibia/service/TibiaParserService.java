@@ -1,5 +1,6 @@
 package br.com.girardon.tibia.service;
 
+import br.com.girardon.tibia.dto.TibiaLogDTO;
 import br.com.girardon.tibia.utils.ReadLogFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,21 +25,18 @@ public class TibiaParserService {
     @Autowired
     private DropService dropService;
 
-    public TibiaParserService parseLogFile() {
+    public TibiaLogDTO parseLogFile() {
         String logContent = ReadLogFileUtils.readLogFile();
-//        List<Integer> healingValues = healingService.findHealingValues(logContent);
-//        List<Integer> experienceGainValues = experienceGainService.findExperienceGainValues(logContent);
-        //List<Integer> damageValues = damageTakenService.findDamageTakenValues(logContent);
-        //Map<String, Integer> damageTakenByMonster = damageTakenService.findDamageTakenByMonster(logContent);
-        damageTakenService.calculateDamageDifference(logContent);
+        List<Integer> healingValues = healingService.findHealingValues(logContent);
+        List<Integer> experienceGainValues = experienceGainService.findExperienceGainValues(logContent);
+        List<Integer> damageTakenValues = damageTakenService.findDamageTakenValues(logContent);
+        Map<String, Integer> damageTakenByMonster = damageTakenService.findDamageTakenByMonster(logContent);
+        Map<String, Integer> findLootItems = dropService.parseLootItems(logContent);
+        int damageTakenByUnknownSource = damageTakenService.calculateDamageDifference(logContent);
+        int totalTakenDamage = damageCausedService.calculateTotalDamage(logContent);
 
-        //List<String> creatureDrops = dropService.parseLootItems(logContent);
-        //Map<String, Integer> creatureDrops = dropService.parseLootItems(logContent);
-        //int creatureDrops = dropService.calculateGoldCoins(logContent);
-        //damageCausedService.calculateTotalDamage(logContent);
-
-        return null;
+        return new TibiaLogDTO(healingValues, experienceGainValues, damageTakenValues,
+                damageTakenByMonster, findLootItems, damageTakenByUnknownSource, totalTakenDamage);
     }
-
 
 }
