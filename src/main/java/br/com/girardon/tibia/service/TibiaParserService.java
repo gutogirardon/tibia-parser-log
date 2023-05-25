@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,16 +17,15 @@ public class TibiaParserService {
 
     private static final Logger logger = LoggerFactory.getLogger(TibiaParserService.class);
     private static final String DAMAGE_HEALED_LOG_PATTERN = "\\d{2}:\\d{2} You healed yourself for (\\d+) hitpoints\\.";
-    private static final String DAMAGE_TAKEN_LOG_PATTERN = "\\d{2}:\\d{2} You lose (\\d+) hitpoints*";
+    private static final String DAMAGE_TAKEN_LOG_PATTERN = "\\d{2}:\\d{2} You lose (\\d+) hitpoint*";
+    private static final String DAMAGE_TAKEN_BY_MONSTER_LOG_PATTERN = "\\d{2}:\\d{2} You lose (\\d+) hitpoints due to an attack by a ([\\w\\s]+)\\.";
+
 
     public TibiaParserService parseLogFile() {
         String logContent = ReadLogFileUtils.readLogFile();
         List<Integer> healingValues = findHealingValues(logContent);
         List<Integer> damageValues = findDamageTakenValues(logContent);
-
-        int totalHealing = calculateTotalHealing(healingValues);
-        int totalDamageTaken = calculateTotalDamageTaken(damageValues);
-
+        Map<String, Integer> damageTakenByMonster = findDamageTakenByMonster(logContent);
         return null;
     }
 
@@ -42,35 +43,39 @@ public class TibiaParserService {
     }
 
     private List<Integer> findHealingValues(String logContent) {
-        String logPattern = DAMAGE_HEALED_LOG_PATTERN;
-        List<Integer> healingValues = findValues(logContent, logPattern);
+        List<Integer> healingValues = findValues(logContent, DAMAGE_HEALED_LOG_PATTERN);
 
-        logger.info("Healing values: {} self-healing actions were found.", healingValues.size());
+        logger.info("{} self-healing actions were found. Total self healing: {} hitpoints.", healingValues.size(), calculateTotal(healingValues));
         return healingValues;
     }
 
     private List<Integer> findDamageTakenValues(String logContent) {
-        String logPattern = DAMAGE_TAKEN_LOG_PATTERN;
-        List<Integer> damageValues = findValues(logContent, logPattern);
+        List<Integer> damageValues = findValues(logContent, DAMAGE_TAKEN_LOG_PATTERN);
 
-        logger.info("Damage taken values: {} damage actions were found.", damageValues.size());
+        logger.info("{} damage actions were found. Total damage taken: {} hitpoints.", damageValues.size(), calculateTotal(damageValues));
         return damageValues;
     }
 
+    private Map<String, Integer> findDamageTakenByMonster(String logContent) {
+        Map<String, Integer> damageTakenByMonster = new HashMap<>();
+        Pattern pattern = Pattern.compile(DAMAGE_TAKEN_BY_MONSTER_LOG_PATTERN);
+        Matcher matcher = pattern.matcher(logContent);
+
+        while (matcher.find()) {
+            int damageValue = Integer.parseInt(matcher.group(1));
+            String monster = matcher.group(2);
+
+            damageTakenByMonster.put(monster, damageTakenByMonster.getOrDefault(monster, 0) + damageValue);
+        }
+
+        logger.info("Damage taken by monsters:");
+        for (Map.Entry<String, Integer> entry : damageTakenByMonster.entrySet()) {
+            logger.info("- {} damage taken: {} hitpoints.", entry.getKey(), entry.getValue());
+        }
+        return damageTakenByMonster;
+    }
+
     private int calculateTotal(List<Integer> values) {
-        int total = values.stream().mapToInt(Integer::intValue).sum();
-        return total;
-    }
-
-    private int calculateTotalHealing(List<Integer> healingValues) {
-        int totalHealing = calculateTotal(healingValues);
-        logger.info("Total healing: {} hitpoints.", totalHealing);
-        return totalHealing;
-    }
-
-    private int calculateTotalDamageTaken(List<Integer> damageValues) {
-        int totalDamageTaken = calculateTotal(damageValues);
-        logger.info("Total damage taken: {} hitpoints.", totalDamageTaken);
-        return totalDamageTaken;
+        return values.stream().mapToInt(Integer::intValue).sum();
     }
 }
