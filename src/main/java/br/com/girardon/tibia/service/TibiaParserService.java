@@ -27,16 +27,15 @@ public class TibiaParserService {
 
     public TibiaLogDTO parseLogFile() {
         String logContent = ReadLogFileUtils.readLogFile();
-        List<Integer> healingValues = healingService.findHealingValues(logContent);
-        List<Integer> experienceGainValues = experienceGainService.findExperienceGainValues(logContent);
-        List<Integer> damageTakenValues = damageTakenService.findDamageTakenValues(logContent);
+        Integer healingValues = healingService.findHealingValues(logContent);
+        Integer experienceGainValues = experienceGainService.findExperienceGainValues(logContent);
+        Integer allDamageTakenValue = damageTakenService.getAllDamageTakenValue(logContent);
         Map<String, Integer> damageTakenByMonster = damageTakenService.findDamageTakenByMonster(logContent);
-        Map<String, Integer> findLootItems = dropService.parseLootItems(logContent);
         int damageTakenByUnknownSource = damageTakenService.calculateDamageDifference(logContent);
-        int totalTakenDamage = damageCausedService.calculateTotalDamage(logContent);
+        int damageCausedToBlackKnight = damageCausedService.calculateTotalDamage(logContent);
+        Map<String, Integer> findLootItems = dropService.parseLootItems(logContent);
 
-        return new TibiaLogDTO(healingValues, experienceGainValues, damageTakenValues,
-                damageTakenByMonster, findLootItems, damageTakenByUnknownSource, totalTakenDamage);
+        return new TibiaLogDTO(healingValues, experienceGainValues, allDamageTakenValue,
+                damageTakenByMonster, damageTakenByUnknownSource, damageCausedToBlackKnight, findLootItems);
     }
-
 }

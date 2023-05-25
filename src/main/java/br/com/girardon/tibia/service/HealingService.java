@@ -15,7 +15,7 @@ public class HealingService {
     private static final Logger logger = LoggerFactory.getLogger(HealingService.class);
     private static final String DAMAGE_HEALED_LOG_PATTERN = "\\d{2}:\\d{2} You healed yourself for (\\d+) hitpoints\\.";
 
-    public List<Integer> findHealingValues(String logContent) {
+    public Integer findHealingValues(String logContent) {
         List<Integer> healingValues = new ArrayList<>();
         Pattern pattern = Pattern.compile(DAMAGE_HEALED_LOG_PATTERN);
         Matcher matcher = pattern.matcher(logContent);
@@ -26,7 +26,8 @@ public class HealingService {
         }
 
         logger.info("{} self-healing actions were found. Total self healing: {} hitpoints.", healingValues.size(), calculateTotal(healingValues));
-        return healingValues;
+        //return healingValues; //return a full list of all healing values
+        return calculateTotal(healingValues);
     }
 
     private int calculateTotal(List<Integer> values) {

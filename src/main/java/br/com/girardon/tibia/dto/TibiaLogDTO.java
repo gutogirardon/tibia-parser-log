@@ -1,82 +1,99 @@
 package br.com.girardon.tibia.dto;
 
-import java.util.List;
 import java.util.Map;
 
 public class TibiaLogDTO {
-    private List<Integer> healingValues;
-    private List<Integer> experienceGainValues;
-    private List<Integer> damageTakenValues;
-    private Map<String, Integer> damageTakenByMonster;
-    private Map<String, Integer> findLootItems;
-    private int damageTakenByUnknownSource;
-    private int totalTakenDamage;
+    private Integer hitpointsHealed;
+    private Integer experienceGained;
+    private Damage damage;
+    private Map<String, Integer> loot;
 
-    public TibiaLogDTO(List<Integer> healingValues, List<Integer> experienceGainValues,
-                       List<Integer> damageTakenValues, Map<String, Integer> damageTakenByMonster,
-                       Map<String, Integer> findLootItems, int damageTakenByUnknownSource, int totalTakenDamage) {
-        this.healingValues = healingValues;
-        this.experienceGainValues = experienceGainValues;
-        this.damageTakenValues = damageTakenValues;
-        this.damageTakenByMonster = damageTakenByMonster;
-        this.findLootItems = findLootItems;
-        this.damageTakenByUnknownSource = damageTakenByUnknownSource;
-        this.totalTakenDamage = totalTakenDamage;
+    public TibiaLogDTO(Integer hitpointsHealed, Integer experienceGained,
+                       Integer damageTakenTotalValue, Map<String, Integer> damageTakenByMonster,
+                       int damageTakenByUnknownSource, int damageCausedToBlackKnight,
+                       Map<String, Integer> loot) {
+        this.hitpointsHealed = hitpointsHealed;
+        this.experienceGained = experienceGained;
+        this.damage = new Damage(damageTakenTotalValue, damageTakenByMonster, damageTakenByUnknownSource, damageCausedToBlackKnight);
+        this.loot = loot;
     }
 
-    public List<Integer> getHealingValues() {
-        return healingValues;
+    public Integer getHitpointsHealed() {
+        return hitpointsHealed;
     }
 
-    public void setHealingValues(List<Integer> healingValues) {
-        this.healingValues = healingValues;
+    public void setHitpointsHealed(Integer hitpointsHealed) {
+        this.hitpointsHealed = hitpointsHealed;
     }
 
-    public List<Integer> getExperienceGainValues() {
-        return experienceGainValues;
+    public Integer getExperienceGained() {
+        return experienceGained;
     }
 
-    public void setExperienceGainValues(List<Integer> experienceGainValues) {
-        this.experienceGainValues = experienceGainValues;
+    public void setExperienceGained(Integer experienceGained) {
+        this.experienceGained = experienceGained;
     }
 
-    public List<Integer> getDamageTakenValues() {
-        return damageTakenValues;
+    public Damage getDamage() {
+        return damage;
     }
 
-    public void setDamageTakenValues(List<Integer> damageTakenValues) {
-        this.damageTakenValues = damageTakenValues;
+    public void setDamage(Damage damage) {
+        this.damage = damage;
     }
 
-    public Map<String, Integer> getDamageTakenByMonster() {
-        return damageTakenByMonster;
+    public Map<String, Integer> getLoot() {
+        return loot;
     }
 
-    public void setDamageTakenByMonster(Map<String, Integer> damageTakenByMonster) {
-        this.damageTakenByMonster = damageTakenByMonster;
+    public void setLoot(Map<String, Integer> loot) {
+        this.loot = loot;
     }
 
-    public Map<String, Integer> getFindLootItems() {
-        return findLootItems;
-    }
+    public static class Damage {
+        private Integer damageTakenTotalValue;
+        private Map<String, Integer> damageTakenByMonster;
+        private int damageTakenByUnknownSource;
+        private int damageCausedToBlackKnight;
 
-    public void setFindLootItems(Map<String, Integer> findLootItems) {
-        this.findLootItems = findLootItems;
-    }
+        public Damage(Integer damageTakenTotalValue, Map<String, Integer> damageTakenByMonster,
+                      int damageTakenByUnknownSource, int damageCausedToBlackKnight) {
+            this.damageTakenTotalValue = damageTakenTotalValue;
+            this.damageTakenByMonster = damageTakenByMonster;
+            this.damageTakenByUnknownSource = damageTakenByUnknownSource;
+            this.damageCausedToBlackKnight = damageCausedToBlackKnight;
+        }
 
-    public int getDamageTakenByUnknownSource() {
-        return damageTakenByUnknownSource;
-    }
+        public Integer getDamageTakenTotalValue() {
+            return damageTakenTotalValue;
+        }
 
-    public void setDamageTakenByUnknownSource(int damageTakenByUnknownSource) {
-        this.damageTakenByUnknownSource = damageTakenByUnknownSource;
-    }
+        public void setDamageTakenTotalValue(Integer damageTakenTotalValue) {
+            this.damageTakenTotalValue = damageTakenTotalValue;
+        }
 
-    public int getTotalTakenDamage() {
-        return totalTakenDamage;
-    }
+        public Map<String, Integer> getDamageTakenByMonster() {
+            return damageTakenByMonster;
+        }
 
-    public void setTotalTakenDamage(int totalTakenDamage) {
-        this.totalTakenDamage = totalTakenDamage;
+        public void setDamageTakenByMonster(Map<String, Integer> damageTakenByMonster) {
+            this.damageTakenByMonster = damageTakenByMonster;
+        }
+
+        public int getDamageTakenByUnknownSource() {
+            return damageTakenByUnknownSource;
+        }
+
+        public void setDamageTakenByUnknownSource(int damageTakenByUnknownSource) {
+            this.damageTakenByUnknownSource = damageTakenByUnknownSource;
+        }
+
+        public int getDamageCausedToBlackKnight() {
+            return damageCausedToBlackKnight;
+        }
+
+        public void setDamageCausedToBlackKnight(int damageCausedToBlackKnight) {
+            this.damageCausedToBlackKnight = damageCausedToBlackKnight;
+        }
     }
 }

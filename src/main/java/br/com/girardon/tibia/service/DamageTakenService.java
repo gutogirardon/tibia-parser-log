@@ -55,6 +55,11 @@ public class DamageTakenService {
         return damageDifference;
     }
 
+    public int getAllDamageTakenValue(String logContent) {
+        List<Integer> damageTakenValues = findDamageTakenValues(logContent);
+        return calculateTotal(damageTakenValues);
+    }
+
     private List<Integer> findValues(String logContent) {
         List<Integer> values = new ArrayList<>();
         Pattern pattern = Pattern.compile(DAMAGE_TAKEN_LOG_PATTERN);

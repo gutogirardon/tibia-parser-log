@@ -15,11 +15,13 @@ public class ExperienceService {
     private static final Logger logger = LoggerFactory.getLogger(ExperienceService.class);
     private static final String EXPERIENCE_GAIN_LOG_PATTERN = "\\d{2}:\\d{2} You gained (\\d+) experience points\\.";
 
-    public List<Integer> findExperienceGainValues(String logContent) {
+    public Integer findExperienceGainValues(String logContent) {
         List<Integer> experienceGainValues = findValues(logContent);
 
-        logger.info("{} experience gain actions were found. Total experience gained: {} points.", experienceGainValues.size(), calculateTotal(experienceGainValues));
-        return experienceGainValues;
+        logger.info("{} experience gain actions were found. Total experience gained: {} points.",
+                experienceGainValues.size(), calculateTotal(experienceGainValues));
+        //return experienceGainValues; //retorna a lista de todas xp`s recebidas
+        return calculateTotal(experienceGainValues);
     }
 
     private List<Integer> findValues(String logContent) {
